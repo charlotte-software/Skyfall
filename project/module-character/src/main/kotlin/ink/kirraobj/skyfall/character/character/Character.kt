@@ -1,7 +1,7 @@
 package ink.kirraobj.skyfall.character.character
 
-import ink.kirraobj.skyfall.character.skill.CharacterSkill
 import ink.kirraobj.skyfall.character.skill.Skill
+import ink.kirraobj.skyfall.character.skill.adapter.impl.AdapterCharacter
 import taboolib.common.io.getInstance
 import taboolib.common.io.runningClasses
 
@@ -18,20 +18,14 @@ abstract class Character {
     companion object {
 
         fun getSkills(character: Character): List<Skill> {
-            val toReturn = mutableListOf<Skill>()
-            runningClasses
+            return runningClasses
                 .filter { Skill::class.java.isAssignableFrom(it.javaClass) && it != Skill::class.java }
-                .forEach {
-                    if (CharacterSkill::class.java.isAssignableFrom(it.javaClass) && it != CharacterSkill::class.java) {
-                        val instance = it.getInstance() as CharacterSkill
-                        if (instance.character == character) {
-                            toReturn += instance as Skill
-                        }
-                        return@forEach
-                    }
-                    toReturn += it.getInstance() as Skill
+                .map { it.getInstance() as Skill }
+                .filter {
+                    val adapter = it as? AdapterCharacter ?: return@filter true
+                    return@filter adapter.character == character
                 }
-            return toReturn
+                .toCollection(mutableListOf())
         }
     }
 }

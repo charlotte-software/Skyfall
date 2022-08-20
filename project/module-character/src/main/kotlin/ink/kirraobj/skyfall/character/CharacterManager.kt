@@ -6,8 +6,13 @@ import taboolib.common.LifeCycle
 import taboolib.common.io.getInstance
 import taboolib.common.io.runningClasses
 import taboolib.common.platform.Awake
+import taboolib.platform.BukkitPlugin
 
 object CharacterManager {
+
+    private val plugin by lazy {
+        BukkitPlugin.getInstance()
+    }
 
     lateinit var characters: MutableMap<String, Character>
 
@@ -20,5 +25,6 @@ object CharacterManager {
             .map { it.getInstance(newInstance = true) as Character }
             .associateBy { it.id }
             .toMutableMap()
+        taskChainFactory = TaskChainFactory(plugin)
     }
 }

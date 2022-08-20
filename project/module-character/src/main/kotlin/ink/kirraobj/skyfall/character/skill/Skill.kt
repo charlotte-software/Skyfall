@@ -4,6 +4,8 @@ import ink.kirraobj.skyfall.character.CharacterCooldown.isInCooldown
 import ink.kirraobj.skyfall.character.CharacterCooldown.refreshCooldown
 import ink.kirraobj.skyfall.character.CharacterProfile
 import ink.kirraobj.skyfall.character.event.SkillEvent
+import ink.kirraobj.skyfall.character.skill.adapter.AdapterParser
+import ink.kirraobj.skyfall.character.skill.adapter.impl.AdapterMana
 import org.bukkit.entity.Player
 
 abstract class Skill {
@@ -12,17 +14,12 @@ abstract class Skill {
 
     abstract val name: String
 
-    abstract var level: Int
-
-    abstract val maxLevel: Int
-
     @Suppress("SpellCheckingInspection")
     abstract val cooldownSecs: Int
 
-    abstract val costMana: Int
-
     fun cast(player: Player, trigger: Boolean = true): CastResult {
         val profile = CharacterProfile.getByPlayer(player) ?: return CastResult.OTHER
+        val costMana = AdapterParser.parse<AdapterMana>(this)?.costMana ?: Integer.MIN_VALUE
         return when {
             profile.mana < costMana -> CastResult.NO_MANA
             profile.isInCooldown(this) -> CastResult.IN_COOLDOWN
