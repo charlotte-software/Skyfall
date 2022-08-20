@@ -10,6 +10,7 @@ object Test1 {
 
     @JvmStatic
     fun main(args: Array<String>) {
+
         val instanceA = ClazzA()
         val instanceB = ClazzB()
         println(InterfaceA::class.java.isAssignableFrom(instanceB.javaClass))

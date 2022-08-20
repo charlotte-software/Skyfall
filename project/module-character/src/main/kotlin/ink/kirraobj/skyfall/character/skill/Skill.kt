@@ -19,7 +19,7 @@ abstract class Skill {
 
     fun cast(player: Player, trigger: Boolean = true): CastResult {
         val profile = CharacterProfile.getByPlayer(player) ?: return CastResult.OTHER
-        val costMana = AdapterParser.parse<AdapterMana>(this)?.costMana ?: Integer.MIN_VALUE
+        val costMana = AdapterParser.parse<AdapterMana>(this)?.costMana ?: 0
         return when {
             profile.mana < costMana -> CastResult.NO_MANA
             profile.isInCooldown(this) -> CastResult.IN_COOLDOWN
